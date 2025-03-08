@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Announcements</title>
+</head>
+<body>
+
+    <h2>Add Announcement</h2>
+    <input type="text" id="title" placeholder="Title" required>
+    <textarea id="message" placeholder="Message" required></textarea>
+    <button id="postBtn">Post Announcement</button>
+
+    <p id="status"></p> <!-- Status Message -->
+
+    <!-- ✅ Load Firebase Scripts (COMPAT VERSION) -->
+    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        console.log("Page Loaded - Initializing Firebase...");
+
+        // ✅ Replace with your actual Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAIxakRGIrE4BGYbBx3Ed5MKwO9Qf2fegM",
+            authDomain: "festx-74486.firebaseapp.com",
+            projectId: "festx-74486",
+            storageBucket: "festx-74486.appspot.com",
+            messagingSenderId: "123462603681",
+            appId: "1:123462603681:web:58479c6ea27857818eb1e0",
+            measurementId: "G-VXB4BDNQMC"
+        };
+
+        // ✅ Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        console.log("✅ Firebase Initialized Successfully!");
+
+        // ✅ Function to Post Announcement
+        function postAnnouncement() {
+            const title = document.getElementById("title").value;
+            const message = document.getElementById("message").value;
+            
+            if (!title || !message) {
+                document.getElementById("status").innerText = "❌ Title and Message are required!";
+                return;
+            }
+
+            db.collection("announcements").add({
+                title: title,
+                message: message,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                document.getElementById("status").innerText = "✅ Announcement Posted!";
+                console.log("✅ Announcement added successfully!");
+            }).catch(error => {
+                document.getElementById("status").innerText = "❌ Error: " + error.message;
+                console.error("❌ Error adding announcement:", error);
+            });
+        }
+
+        // ✅ Attach function to button click
+        document.getElementById("postBtn").addEventListener("click", postAnnouncement);
+    </script>
+
+</body>
+</html>
